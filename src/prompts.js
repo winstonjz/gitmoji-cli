@@ -13,7 +13,7 @@ const config = [
     name: constants.ISSUE_FORMAT,
     message: 'Choose Issue Format',
     type: 'list',
-    choices: ['github', 'jira']
+    choices: ['github', 'jira', 'bracket']
   },
   {
     name: constants.EMOJI_FORMAT,

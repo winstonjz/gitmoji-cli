@@ -19,7 +19,7 @@ class GitmojiCli {
     this._gitmojiApiClient = gitmojiApiClient
     this._gitmojis = gitmojis
     if (config.getAutoAdd() === undefined) config.setAutoAdd(true)
-    if (!config.getIssueFormat()) config.setIssueFormat(constants.GITHUB)
+    if (!config.getIssueFormat()) config.setIssueFormat(constants.BRACKET)
     if (!config.getEmojiFormat()) config.setEmojiFormat(constants.CODE)
     if (config.getSignedCommit() === undefined) config.setSignedCommit(true)
   }
@@ -118,9 +118,11 @@ class GitmojiCli {
   }
 
   _hook (answers) {
-    const title = `${answers.gitmoji} ${answers.title}`
-    const reference = (answers.reference) ? `#${answers.reference}` : ''
-    const body = `${answers.message} ${reference}`
+    const references = answers.reference && answers.reference !== 'none' 
+      ? answers.reference.split(/[\s,]+/).map(ref => `${this._formatReference(ref)}`).join('') 
+      : ''
+    const title = `${references}(${answers.gitmoji}) - ${answers.title}`
+    const body = `${answers.message}`
 
     fs.writeFile(process.argv[3], `${title}\n\n${body}`, (error) => {
       if (error) {
@@ -131,16 +133,25 @@ class GitmojiCli {
     })
   }
 
+  _formatReference (reference) {
+    if (config.getIssueFormat === constants.GITHUB) {
+      return `#${reference}`
+    } else if (config.getIssueFormat === constants.BRACKET) {
+      return `[${reference}]`
+    } else {
+      return `${reference}`
+    }
+  }
+
   _commit (answers) {
-    const title = `${answers.gitmoji} ${answers.title}`
-    const prefixReference = config.getIssueFormat() === constants.GITHUB
-      ? '#'
+    const references = answers.reference && answers.reference !== 'none' 
+      ? answers.reference.split(/[\s,]+/).map(ref => `${this._formatReference(ref)}`).join('') 
       : ''
-    const reference = (answers.reference)
+    const title = `${answers.gitmoji} ${answers.title}`
       ? `${prefixReference}${answers.reference}`
       : ''
     const signed = config.getSignedCommit() ? '-S' : ''
-    const body = `${answers.message} ${reference}`
+    const body = `${answers.message} ${references}`
     const commit = `git commit ${signed} -m "${title}" -m "${body}"`
 
     if (!this._isAGitRepo()) {

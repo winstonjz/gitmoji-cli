@@ -31,7 +31,7 @@ const githubGuard = (ref) => ref.match(/(^[1-9][0-9]*)+$/)
 * @param {Number} ref - Represents a jira reference
 * @returns {Boolean}
 */
-const jiraGuard = (ref) => ref.match(/^([A-Z][A-Z0-9]{1,9}-[0-9]+)$/g)
+const jiraGuard = (ref) => ref.match(/^([A-Z][A-Z0-9]{1,9}-[0-9]+)$/g) || ref.toString().toLowerCase() === 'none'
   ? true
   : errors.referenceJira
 
@@ -43,6 +43,10 @@ const reference = (reference, mode) => {
     }
 
     case constants.JIRA: {
+      return jiraGuard(reference)
+    }
+
+    case constants.BRACKET: {
       return jiraGuard(reference)
     }
 
