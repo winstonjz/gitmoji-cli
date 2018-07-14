@@ -5,6 +5,7 @@ const inquirer = require('inquirer')
 const parentDirs = require('parent-dirs')
 const path = require('path')
 const pathExists = require('path-exists')
+const branchName = require('branch-name')
 
 const config = require('./config')
 const prompts = require('./prompts')
@@ -20,7 +21,7 @@ class GitmojiCli {
     this._gitmojis = gitmojis
     if (config.getAutoAdd() === undefined) config.setAutoAdd(true)
     if (!config.getIssueFormat()) config.setIssueFormat(constants.BRACKET)
-    if (!config.getEmojiFormat()) config.setEmojiFormat(constants.CODE)
+    if (!config.getEmojiFormat()) config.setEmojiFormat(constants.EMOJI_FORMAT)
     if (config.getSignedCommit() === undefined) config.setSignedCommit(true)
   }
 
@@ -98,10 +99,16 @@ class GitmojiCli {
     }
 
     return this._fetchEmojis()
-      .then((gitmojis) => prompts.gitmoji(gitmojis))
+      .then((gitmojis) => {
+        console.log(gitmojis)
+        return prompts.gitmoji(gitmojis)
+      })
       .then((questions) => {
-        inquirer.prompt(questions).then((answers) => {
-          if (mode === constants.HOOK_MODE) this._hook(answers)
+        Promise.all([inquirer.prompt(questions), branchName.get()]).then(([answers, currentBranchName]) => {
+          const jiraMatcher = /((?!([A-Z0-9a-z]{1,10})-?$)[A-Z]{1}[A-Z0-9]+-\d+)/g
+          const jiraTags = currentBranchName.match(jiraMatcher)
+          answers.jiraTags = jiraTags
+          if (mode === constants.HOOK_MODE) return this._hook(answers)
           return this._commit(answers)
         })
       })
@@ -118,10 +125,8 @@ class GitmojiCli {
   }
 
   _hook (answers) {
-    const references = answers.reference && answers.reference !== 'none' 
-      ? answers.reference.split(/[\s,]+/).map(ref => `${this._formatReference(ref)}`).join('') 
-      : ''
-    const title = `${references}(${answers.gitmoji}) - ${answers.title}`
+    const references = answers.jiraTags.map(tag => `${this._formatTag(tag)}`).join('')
+    const title = `${references} (${answers.gitmoji}) - ${answers.title}`
     const body = `${answers.message}`
 
     fs.writeFile(process.argv[3], `${title}\n\n${body}`, (error) => {
@@ -144,14 +149,10 @@ class GitmojiCli {
   }
 
   _commit (answers) {
-    const references = answers.reference && answers.reference !== 'none' 
-      ? answers.reference.split(/[\s,]+/).map(ref => `${this._formatReference(ref)}`).join('') 
-      : ''
-    const title = `${answers.gitmoji} ${answers.title}`
-      ? `${prefixReference}${answers.reference}`
-      : ''
+    const references = answers.jiraTags.map(tag => `${this._formatTag(tag)}`).join('')
+    const title = `${references} (${answers.gitmoji}) - ${answers.title}`
+    const body = `${answers.message}`
     const signed = config.getSignedCommit() ? '-S' : ''
-    const body = `${answers.message} ${references}`
     const commit = `git commit ${signed} -m "${title}" -m "${body}"`
 
     if (!this._isAGitRepo()) {

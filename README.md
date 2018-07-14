@@ -1,28 +1,23 @@
-# gitmoji-cli
-
-[![Travis Build Status](https://img.shields.io/travis/carloscuesta/gitmoji-cli.svg?style=flat-square)](https://travis-ci.org/carloscuesta/gitmoji-cli)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/carloscuesta/gitmoji-cli.svg?style=flat-square)](https://codeclimate.com/github/carloscuesta/gitmoji-cli)
-[![Codecov](https://img.shields.io/codecov/c/github/carloscuesta/gitmoji-cli.svg?style=flat-square)](https://github.com/carloscuesta/gitmoji-cli)
-[![David Dependencies](https://img.shields.io/david/carloscuesta/gitmoji-cli.svg?style=flat-square)](https://david-dm.org/carloscuesta/gitmoji-cli)
-[![npm version](https://img.shields.io/npm/v/gitmoji-cli.svg?style=flat-square)](https://www.npmjs.com/package/gitmoji-cli)
-[![npm downloads](https://img.shields.io/npm/dt/gitmoji-cli.svg?style=flat-square)](https://www.npmjs.com/package/gitmoji-cli)
-[![gitmoji badge](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://github.com/carloscuesta/gitmoji)
-
-![gitmoji-cli](https://cloud.githubusercontent.com/assets/7629661/20454643/11eb9e40-ae47-11e6-90db-a1ad8a87b495.gif)
-
+# Sigmoji (fork of gitmoji)
 > A [gitmoji](https://github.com/carloscuesta/gitmoji) interactive client for using gitmojis on commit messages.
-
 ## About
+Only for use internally within SigFig
 
-This project provides an easy solution for using [**gitmoji**](https://github.com/carloscuesta/gitmoji) from your command line. Gitmoji-cli solves the hassle of searching through the gitmoji list. Includes a bunch of options you can play with! :tada:
-
-## Install
 
 ```bash
-$ npm i -g gitmoji-cli
+$ npm i -g sigmoji-cli
 ```
 
 ## Usage
+
+```bash
+$ gitmoji --init (to add hook in ngts/bam)
+$ git commit 
+```
+
+Titles are always required and when you make a PR the latest commit will become the PR title.
+You can press enter and skip body & JIRA tags
+
 
 ```bash
 $ gitmoji --help
@@ -43,6 +38,14 @@ A gitmoji interactive client for using gitmojis on commit messages.
     --version, -v   Print gitmoji-cli installed version
     --update, -u    Sync emoji list with the repo
 ```
+#### Hook 
+Run the init option, add your changes and commit them, after that the prompts will begin and your commit message will be built.
+
+```bash
+$ gitmoji -i # this will create the .git/hook/prepare-commit-msg
+$ git add .
+$ git commit
+```
 
 ### Commit
 
@@ -56,15 +59,6 @@ Start the interactive commit client, to auto generate your commit based on your 
 $ gitmoji -c
 ```
 
-#### Hook
-
-Run the init option, add your changes and commit them, after that the prompts will begin and your commit message will be built.
-
-```bash
-$ gitmoji -i # this will create the .git/hook/prepare-commit-msg
-$ git add .
-$ git commit
-```
 
 ![gitmoji commit](https://cloud.githubusercontent.com/assets/7629661/20454513/5db2750a-ae43-11e6-99d7-4757108fe640.png)
 

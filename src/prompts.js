@@ -2,6 +2,7 @@ const constants = require('./constants')
 const configVault = require('./config')
 const guard = require('./guard')
 const utils = require('./utils')
+const branchName = require('branch-name')
 
 const config = [
   {
@@ -63,11 +64,11 @@ const gitmoji = (gitmojis) => {
       message: 'Enter the commit message:',
       validate: guard.message
     },
-    {
-      name: 'reference',
-      message: 'Issue / PR reference:',
-      validate: (value) => guard.reference(value, configVault.getIssueFormat())
-    }
+    // {
+    //   name: 'reference',
+    //   message: 'Issue / PR reference:',
+    //   validate: (value) => guard.reference(value, configVault.getIssueFormat())
+    // }
   ]
 }
 
