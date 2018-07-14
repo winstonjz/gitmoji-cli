@@ -3,6 +3,7 @@ const configVault = require('./config')
 const guard = require('./guard')
 const utils = require('./utils')
 const branchName = require('branch-name')
+const fuzzy = require('fuzzy')
 
 const config = [
   {
@@ -38,16 +39,20 @@ const gitmoji = (gitmojis) => {
       message: 'Choose a gitmoji:',
       type: 'autocomplete',
       source: (answersSoFor, input) => {
-        return Promise.resolve(
-          gitmojis.filter((gitmoji) => {
-            const emoji = gitmoji.name.concat(gitmoji.description).toLowerCase()
-            return (!input || emoji.indexOf(input.toLowerCase()) !== -1)
-          })
-          .map((gitmoji) => ({
-            name: `${gitmoji.emoji}  - ${gitmoji.description}`,
-            value: gitmoji[configVault.getEmojiFormat() || constants.CODE]
-          }))
-        )
+        input = input || '';
+        return new Promise(function (resolve) {
+          setTimeout(function () {
+              const stuff = gitmojis.map((gitmoji) => ({
+                name: `${gitmoji.emoji}  - ${gitmoji.description}`,
+                value: gitmoji[configVault.getEmojiFormat() || constants.CODE]
+              }))
+            
+            let fuzzyResult = fuzzy.filter(input, stuff, { extract: (el) => el.name});
+            resolve(fuzzyResult.map(function (el) {
+              return el.original;
+            }));
+          });
+        });
       }
     },
     {
