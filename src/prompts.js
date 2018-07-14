@@ -42,13 +42,13 @@ const gitmoji = (gitmojis) => {
         input = input || '';
         return new Promise(function (resolve) {
           setTimeout(function () {
-              const stuff = gitmojis.map((gitmoji) => ({
+              const formattedGitmojis = gitmojis.map((gitmoji) => ({
                 name: `${gitmoji.emoji}  - ${gitmoji.description}`,
                 value: gitmoji[configVault.getEmojiFormat() || constants.CODE]
               }))
             
-            let fuzzyResult = fuzzy.filter(input, stuff, { extract: (el) => el.name});
-            resolve(fuzzyResult.map(function (el) {
+            let fuzzyGitmojis = fuzzy.filter(input, formattedGitmojis, { extract: (el) => el.name});
+            resolve(fuzzyGitmojis.map(function (el) {
               return el.original;
             }));
           });

@@ -99,15 +99,13 @@ class GitmojiCli {
     }
 
     return this._fetchEmojis()
-      .then((gitmojis) => {
-        console.log(gitmojis)
-        return prompts.gitmoji(gitmojis)
-      })
+      .then((gitmojis) => prompts.gitmoji(gitmojis)
+      )
       .then((questions) => {
         Promise.all([inquirer.prompt(questions), branchName.get()]).then(([answers, currentBranchName]) => {
           const jiraMatcher = /((?!([A-Z0-9a-z]{1,10})-?$)[A-Z]{1}[A-Z0-9]+-\d+)/g
           const jiraTags = currentBranchName.match(jiraMatcher)
-          answers.jiraTags = jiraTags
+          answers.jiraTags = jiraTags || []
           if (mode === constants.HOOK_MODE) return this._hook(answers)
           return this._commit(answers)
         })
