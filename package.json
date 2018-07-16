@@ -1,9 +1,9 @@
 {
-  "name": "gitmoji-cli",
-  "version": "1.9.0",
-  "description": "A gitmoji client for using emojis on commit messages.",
+  "name": "sigmoji-cli",
+  "version": "1.0.0",
+  "description": "An emoji client for using emojis on commit messages for SigFig.",
   "engines": {
-    "node": ">=6"
+    "node": ">=8.9.2"
   },
   "bin": {
     "gitmoji": "cli.js"
