@@ -136,7 +136,7 @@ class GitmojiCli {
     })
   }
 
-  _formatReference (reference) {
+  _formatTag (reference) {
     if (config.getIssueFormat === constants.GITHUB) {
       return `#${reference}`
     } else if (config.getIssueFormat === constants.BRACKET) {
