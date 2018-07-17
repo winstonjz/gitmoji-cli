@@ -136,13 +136,13 @@ class GitmojiCli {
     })
   }
 
-  _formatTag (reference) {
-    if (config.getIssueFormat === constants.GITHUB) {
-      return `#${reference}`
-    } else if (config.getIssueFormat === constants.BRACKET) {
-      return `[${reference}]`
+  _formatTag (tag) {
+    if (config.getIssueFormat() === constants.GITHUB) {
+      return `#${tag}`
+    } else if (config.getIssueFormat() === constants.BRACKET) {
+      return `[${tag}]`
     } else {
-      return `${reference}`
+      return `${tag}`
     }
   }
 
